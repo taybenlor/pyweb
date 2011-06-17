@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Python 2.7.1</title>
+    <script src="python2.7.1.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      // print function which the Python engine will call
+      var lines = [], printed = false;
+
+      function print(text) {
+        lines.push(text);
+        printed = true;
+      }
+
+      function execute(text) {
+        lines = [];
+        printed = false;
+
+        var element = document.getElementById('the_output');
+        if (!element) 
+          return; // perhaps during startup
+
+        var ptr = window.Module.Pointer_make(window.Module.intArrayFromString(text), 0, 2); // leak!
+        try {
+          window.Module._PyRun_SimpleStringFlags(ptr, 0);
+        } 
+        catch(e) {
+          if (e === 'halting, since this is the first run') return;
+          element.innerHTML = 'JS crash: |<b>' + e + '</b>|. Please let us know about this problem!<hr>' + element.innerHTML;
+          return;
+        }
+
+        if (printed) {
+          var lines_html = "";
+          for(var i = 0; i < lines.length; i++){
+            lines_html += lines[i].replace("<","&lt;", "g") + "<br>"
+          }
+          lines_html += "<hr>"
+          element.innerHTML = lines_html + element.innerHTML;
+        } 
+        else {
+          element.innerHTML = '<small><i>(no output)</i></small><hr>' + element.innerHTML;
+        }
+      }
+
+      function doRun() {
+        args = ['-S', '-c', 'print ""'];
+        try {
+          window.Module.run(args);
+        } 
+        catch (e) {
+          if (e !== 'halting, since this is the first run') 
+            throw e;
+        }
+        execute("");
+      }
+    </script>
+    <style>
+
+    </style>
+  </head>
+  <body onload="doRun()">
+    <div style="display: block">
+      <p>
+        This is CPython, the standard <a href="http://www.python.org">Python</a> implementation, compiled from C to
+        JavaScript using <a href="http://emscripten.org">Emscripten</a>,
+        running in your browser (without any plugins).
+      </p>
+      <p>
+        <ul>
+          <li>Most core language stuff should work, except for importing non-static modules (in other words, <code>import sys</code> will work, but other modules won't).</li>
+          <li>Please report bugs if you find them!</li>
+          <li>Tested on Firefox 4 and Chrome 10.</li>
+        </ul>
+      </p>
+      <hr>
+      <!-- Call Python's execution function -->
+      <b>Enter some Python</b>:
+      <button onclick="execute(document.getElementById('the_input').value)">Execute</button>
+      <textarea id="the_input">import sys
+print 'Hello world! This is Python {} on {}'.format(sys.version, sys.platform)
+
+print 'Here are some numbers:', [2*x for x in range(5)][:4]
+      </textarea>
+      <hr>
+      <div id="the_output" style="font-family: Courier New,Courier,monospace;"></div>
+    </div>
+
+  </body>
+</html>
