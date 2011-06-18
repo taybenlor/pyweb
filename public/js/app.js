@@ -2,10 +2,9 @@ window.pageLoaded = function(){
   doRun(); //Do our initial checks
   console.log('hi?');
   var run_button = document.getElementById("run");
-  var input_area = document.getElementById("the_input");
   run_button.addEventListener("click", function(){
     console.log('hi');
-    execute(input_area.value);
+    execute(editor.getSession().getValue());
   });
 };
 
