@@ -17,6 +17,7 @@
   <link rel="shortcut icon" href="/favicon.ico">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
+  <link href='http://fonts.googleapis.com/css?family=Damion&v1' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="/css/reset.css">
   <link rel="stylesheet" href="/css/global.css">
 
@@ -34,7 +35,6 @@
   </noscript>
   <header>
     <h1>Gumby</h1>
-    <h2>The Web Based Python Editor</h2>
     <menu type="toolbar">
       <button id="save">Save</button>
       <button id="load">Load</button>
@@ -43,7 +43,7 @@
     </menu>
   </header>
   <div id="main" role="main">
-      <textarea id="the_input" class="code">import sys
+      <textarea id="the_input" class="code" wrap="off">import sys
 print 'Hello world! This is Python {} on {}'.format(sys.version, sys.platform)
 
 print 'Here are some numbers:', [2*x for x in range(5)][:4]
