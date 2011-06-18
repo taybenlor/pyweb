@@ -158,15 +158,23 @@ body {
   
   #the_input{
     width: 99%;
-    min-height: 200px;
-    height: 50%;
     border: none;
     box-shadow: 0 0 1px black;
     padding: 0.5%;
+    white-space: nowrap; 
+    overflow: auto;
+    height: 200px;
   }
   
   #the_output{
-    background: yellow;
+    margin-top: 24px;
+    background: white;
+    height: 200px;
+    overflow-y: scroll;
+    
+    box-shadow: 0 0 1px black;
+    
+    padding: 5px;
   }
 
 /*	
