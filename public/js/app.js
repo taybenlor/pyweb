@@ -1,7 +1,7 @@
 var editor;
 
 window.pageLoaded = function(){
-  //doRun(); //Do our initial checks
+  doRun(); //Do our initial checks
   var run_button = document.getElementById("run");
   run_button.addEventListener("click", function(){
     execute(editor.getSession().getValue());
@@ -29,6 +29,7 @@ function print(text, klass) {
 function execute(text) {
   lines = [];
   printed = false;
+  var isTB = false, tbLine = -1;
 
   var li = document.createElement('li'), good = true;
   var ptr = window.Module.Pointer_make(window.Module.intArrayFromString(text), 0, 2); // leak!
@@ -45,18 +46,43 @@ function execute(text) {
   
   if (good) {
     if (printed) {
-      var linesHTML = '', line, value;
+      var linesHTML = '', line, value, match;
       for (var i = 0; i < lines.length; i++) {
         line = lines[i];
-        if (line.value == '')
+        if (line.value == '') {
           linesHTML += '\n';
+          continue;
+        }
+
+        value = line.value.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        if (value.match(/^Traceback \(most recent call last\):$/) || value.match(/^\s+File /)) {
+          if (!isTB) {
+            isTB = true;
+            linesHTML += '<span class="traceback">';
+          }
+          match = value.match(/\s+File "[^"]+", line (\d+)/);
+          if (match)
+            tbLine = match[1];
+          linesHTML += value;
+        }
+        else if (isTB) {
+          linesHTML += value;
+          match = value.match(/\s+File "[^"]+", line (\d+)/);
+          if (match)
+            tbLine = match[1];
+          if (value.match(/^[_A-Za-z][_a-zA-Z0-9]*: /)) {
+            isTB = false;
+            linesHTML += '</span>';
+          }
+        }
         else {
-          value = line.value.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
           if (line.klass)
             linesHTML += '<span class="' + line.klass + '">' + value + '</span>';
-          else
+          else {
             linesHTML += value;
+          }
         }
+
       }
       li.innerHTML = linesHTML;
     } 
@@ -70,6 +96,12 @@ function execute(text) {
     output.insertBefore(li, output.firstChild);
   else
     output.appendChild(li);
+
+  // if traceback, try and jump to the appropriate line of death
+  if (isTB && tbLine != "-1") {
+    tbLine = parseInt(tbLine);
+    editor.gotoLine(tbLine);
+  }
 }
 
 
