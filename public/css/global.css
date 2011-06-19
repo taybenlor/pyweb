@@ -163,16 +163,29 @@ body {
     position: relative;
     width: 100%;
   }
+  
+  #output {
+    list-style: none;
+    margin-left: 0;
+  }
+    #output li {
+      border-top: 1px dotted black;
+      font-family: monospace;
+      margin-top: 3px;
+      padding: 3px;
+      white-space: pre-wrap;
+    }
+      #output li:first-child {
+        border-top: none;
+        margin-top: 0;
+      }
 
-  #the_output{
+  #output_container{
     margin-top: 24px;
     background: white;
     height: 200px;
     overflow-y: scroll;
-    
     box-shadow: 0 0 1px black;
-    
-    padding: 5px;
   }
 
 /*	
