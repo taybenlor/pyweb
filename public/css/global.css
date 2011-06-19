@@ -208,6 +208,14 @@ body {
       background-color: rgba(159, 159, 159, 0.5);
       -webkit-border-radius: 4px;
     }
+
+    #editor .ace_gutter .error {
+      color: red;
+    }
+    #editor .ace_content .error {
+      background-color: #401414;
+      color: red;
+    }
   
   #output {
     list-style: none;

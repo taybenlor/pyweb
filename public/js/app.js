@@ -101,6 +101,10 @@ function execute(text) {
   if (isTB && tbLine != "-1") {
     tbLine = parseInt(tbLine);
     editor.gotoLine(tbLine);
+    var aceCells = document.getElementById('editor').getElementsByClassName('ace_gutter-cell');
+    aceCells[tbLine - 1].className += ' error';
+    aceCells = document.getElementById('editor').getElementsByClassName('ace_line');
+    aceCells[tbLine - 1].className += ' error';
   }
 }
 
