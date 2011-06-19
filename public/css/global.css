@@ -25,25 +25,9 @@ body {
 
   header{
     width: 100%;
-    height: 40px;
-    background:
-      -webkit-linear-gradient(rgba(46, 46, 46, 0.7), rgba(46, 46, 46, 0.7)),
-      -webkit-linear-gradient(63deg, #151515 1px, transparent 1px) 0 1px,
-      -webkit-linear-gradient(243deg, #151515 1px, transparent 1px) 2px 0px,
-      -webkit-linear-gradient(63deg, #222 1px, transparent 1px) 0px 2px,
-      -webkit-linear-gradient(243deg, #222 1px, transparent 1px) 2px 1px,
-      -webkit-linear-gradient(0deg, #1b1b1b 2px, transparent 2px),
-      -webkit-linear-gradient(#1d1d1d 25%, #1a1a1a 25%, #1a1a1a 50%, transparent 50%, transparent 75%, #242424 75%, #242424);
-    background:
-      -moz-linear-gradient(rgba(46, 46, 46, 0.7), rgba(46, 46, 46, 0.7)),
-      -moz-linear-gradient(63deg, #151515 1px, transparent 1px) 0 1px,
-      -moz-linear-gradient(243deg, #151515 1px, transparent 1px) 2px 0px,
-      -moz-linear-gradient(63deg, #222 1px, transparent 1px) 0px 2px,
-      -moz-linear-gradient(243deg, #222 1px, transparent 1px) 2px 1px,
-      -moz-linear-gradient(0deg, #1b1b1b 2px, transparent 2px),
-      -moz-linear-gradient(#1d1d1d 25%, #1a1a1a 25%, #1a1a1a 50%, transparent 50%, transparent 75%, #242424 75%, #242424);
-    
-    background-color: #131313;
+    height: 36px;
+ 
+    background-color: #343444;
     background-size: 4px 4px;
     
     -webkit-border-radius: 6px;
@@ -56,17 +40,20 @@ body {
     
     position: relative;
     
-    box-shadow: inset 0 0px 1px rgba(0,0,0,0.6), inset 0 1px rgba(255,255,255,0.3), 0 0 10px #2E2E2E;
+    box-shadow: inset 0 0 1px rgba(0,0,0,0.2);
     
   }
   
     header h1{
       font-family: 'Damion', arial, serif;
-      font-size: 28px;
+      font-size: 24px;
+      line-height: 24px;
       font-weight: normal;
-      color: #96BFCE;
+      color: #EEEEEE;
       text-shadow: 0 1px rgba(0,0,0,0.6), 0 -1px rgba(0,0,0,0.6);
       margin-left: 10px;
+      margin-top: 5px;
+      text-align: left;
     }
     
     header h2{
@@ -75,18 +62,14 @@ body {
     }
     
     header menu{
-      margin-top: -28px;
-      margin-left: 100px;
+      position: absolute;
+      right: 10px;
+      top: 0px;
     }
-    
-      #run{
-        position: absolute;
-        right: 10px;
-      }
       
     button{
       background: #2E2E2E;
-      background: -webkit-linear-gradient(rgba(62, 62, 62, 0.3), rgba(46, 46, 46, 0.3));
+      background: -webkit-linear-gradient(rgba(62, 62, 62, 0.9), rgba(46, 46, 46, 0.7));
       font-size: 13px;
       padding: 4px;
       
@@ -98,17 +81,17 @@ body {
       -moz-border-radius: 4px;
       border-radius: 4px;
       
-      color: #666;
+      color: white;
       text-shadow: 0 -1px black;
       
-      margin: 2px;
+      margin: 5px;
       
       width: 50px;
     }
     
       header button:hover{
-        color: #DDD;
-        background: -webkit-linear-gradient(#505050, #303030);
+        color: white;
+        border: 1px solid #53546E;
       }
       
       header button:active{
@@ -160,7 +143,7 @@ body {
   #editor {
     border: none;
     box-shadow: 0 0 1px black;
-    height: 200px;
+    height: 300px;
     padding: 0;
     position: relative;
     width: 100%;
@@ -202,7 +185,7 @@ body {
   #the_output{
     margin-top: 24px;
     background: white;
-    height: 200px;
+    height: 136px;
     overflow-y: scroll;
     
     box-shadow: 0 0 1px black;
@@ -228,6 +211,18 @@ body {
 	  width: 100%;
 	  padding: 0;
 	  margin: 0;
+	  border-top: 1px solid #212121;
+	}
+	
+	#editor, #the_output{
+	  margin: 0;
+	}
+	
+	#editor{
+	  border-bottom: 1px solid #9F9F9F;
+	  -webkit-box-shadow: none;
+	  -moz-box-shadow: none;
+	  box-shadow: none;
 	}
 	
 	header{
