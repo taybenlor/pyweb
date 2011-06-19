@@ -1,11 +1,17 @@
+var editor;
+
 window.pageLoaded = function(){
   doRun(); //Do our initial checks
-  console.log('hi?');
   var run_button = document.getElementById("run");
   run_button.addEventListener("click", function(){
-    console.log('hi');
     execute(editor.getSession().getValue());
   });
+  
+  /* Editor */
+  var Mode = require("ace/mode/python").Mode;
+  editor = ace.edit("editor");
+  editor.setTheme("ace/theme/twilight");
+  editor.getSession().setMode(new Mode());
 };
 
 // print function which the Python engine will call
