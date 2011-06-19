@@ -1,6 +1,47 @@
-(function (document, window, JSON, Math) {
+/* Based off Hashify - http://hashify.me - https://bitbucket.org/davidchambers/hashify.me/src */ 
 
-  var
+/*
+Copyright 2011 David Chambers. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice,
+    this list of conditions and the following disclaimer.
+
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the following disclaimer in the documentation
+    and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY DAVID CHAMBERS "AS IS" AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL DAVID CHAMBERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+The views and conclusions contained in the software and documentation are
+those of the authors and should not be interpreted as representing official
+policies, either expressed or implied, of David Chambers.
+*/
+
+(function (document, window, JSON, Math) {
+  
+  var 
+    
+    Hashify = window.Hashify = {
+      encode: function (text) {
+        return window.btoa(window.unescape(encodeURIComponent(text)));
+      },
+
+      decode: function (text) {
+        return decodeURIComponent(window.escape(window.atob(text)));
+      }
+    },
 
     $ = function (id) {
       return document.getElementById(id);
@@ -8,21 +49,7 @@
 
     body = document.body,
 
-    dragger = $('dragger'),
-
-    editor = $('markdown'),
-
-    kbdShortcuts = $('kbd-shortcuts'),
-
-    markup = $('markup'),
-
-    qrcode = $('qrcode'),
-
-    shorten = $('shorten'),
-
-    sidebar = $('sidebar'),
-
-    wrapper = $('wrapper'),
+    editor = $('editor'),
 
     bitlyLimit = 15,
 
@@ -30,7 +57,7 @@
 
     dragging,
 
-    hashifyMe = 'http://hashify.me/',
+    hashifyMe = 'http://gumbyapp.com/',
 
     hashifyMeLen = hashifyMe.length,
 
@@ -40,31 +67,9 @@
 
     maxHashLength = 2048 - hashifyMe.length,
 
-    preferredWidth = (function (match) {
-      match = /(?:^|; )w=(\d+?)(?:;|$)/.exec(document.cookie);
-      return match? +match[1]: -1;
-    }()),
-
-    presentationModeSpecifier = '?mode:presentation',
-
     pushStateExists = window.history && history.pushState,
 
     returnFalse = function () { return false; },
-
-    sidebarMinimumWidth =
-      // From [https://developer.mozilla.org/en/DOM:window.getComputedStyle]:
-      // 
-      // > Prior to Gecko 2.0 (Firefox 4 / Thunderbird 3.3 / SeaMonkey 2.1),
-      // > the `pseudoElt` parameter was required. No other major browser
-      // > required this parameter be specified if null. Gecko has been
-      // > changed to match the behavior of other browsers.
-      parseInt(window.getComputedStyle(sidebar, null).getPropertyValue('width'), 10),
-
-    sidebarVisibleWidth = sidebarMinimumWidth,
-
-    windowWidth,
-
-    convert = new Showdown('abbreviations').convert,
 
     encode = Hashify.encode,
 
@@ -86,15 +91,6 @@
       return documentComponents()[1];
     },
 
-    highlight = (function (prettyPrint, nodeList) {
-      nodeList = document.getElementsByTagName('code');
-      return function () {
-        var i = nodeList.length;
-        while (i--) nodeList[i].className = 'prettyprint';
-        prettyPrint();
-      };
-    }(prettyPrint)),
-
     // logic borrowed from https://github.com/jquery/jquery
     parseJSON = function (data) {
       if (typeof data !== 'string' || !data) {
@@ -112,28 +108,6 @@
       ) return JSON && JSON.parse? JSON.parse(data): new Function('return ' + data)();
       throw new SyntaxError('Invalid JSON');
     },
-
-    resizeSidebar = (function () {
-      var
-        px = 'px',
-        markupStyle = markup.style,
-        sidebarStyle = sidebar.style;
-
-      return function (width) {
-        // We could return immediately if `width === sidebarVisibleWidth`.
-        // Since we expect horizontal dragging, though, the optimization
-        // isn't worth its bytes.
-        if (width < sidebarMinimumWidth) {
-          sidebarStyle.left = width - sidebarMinimumWidth + px;
-          sidebarStyle.width = sidebarMinimumWidth + px;
-        } else {
-          sidebarStyle.left = 0;
-          sidebarStyle.width = width + px;
-        }
-        markupStyle.marginLeft = width + px;
-        sidebarVisibleWidth = width;
-      };
-    }()),
 
     sendRequest = (function (corsNotSupported, text) {
       corsNotSupported = function () {
@@ -224,7 +198,7 @@
       var
         counter = $('counter'),
         caution = maxHashLength,
-        danger = 2083 - (hashifyMe + '#!/' + presentationModeSpecifier).length;
+        danger = 2083 - (hashifyMe + '#!/').length;
 
       return function (hash, arg) {
         var
@@ -304,7 +278,7 @@
         wrapper.insertBefore(tweet, shorturl);
 
         url = data.long_url.substr(hashifyMeLen);
-        if (!/^unpack:/.test(url)) {
+        if (!(/^unpack:/.test(url))) {
           lastSavedDocument = url;
           setLocation(url, true);
         }
@@ -413,146 +387,6 @@
     wrapper.className = 'loading';
     shorten.style.display = 'none';
   }
-
-  shorten.onclick = function () {
-    shortenUrl();
-    return false;
-  };
-
-  editor.onkeyup = function () {
-    // In Chrome, if `editor` has focus, this function is invoked when
-    // one hits "enter" in the location bar! Without this check, if one
-    // were to type "twitter.com" into the location bar and hit "enter",
-    // the ensuing chain of events would result in the current location
-    // replacing "twitter.com" in the location bar, and no Twitter. >.<
-
-    // If `editor.value` has changed since last we checked, we go ahead
-    // and update the view. If it has _not_ changed, as will be the case
-    // when one hits "enter" in the location bar, we needn't do anything.
-    if (lastEditorValue !== (lastEditorValue = this.value)) {
-      updateView(lastEditorValue);
-    }
-  };
-
-  document.onkeydown = function (event) {
-    event || (event = window.event);
-    if ((event.target || event.srcElement) !== editor) {
-      switch (event.keyCode) {
-        case 27: // escape
-          kbdShortcuts.className = '';
-          break;
-        case 37: // left arrow
-          resizeSidebar(0);
-          break;
-        case 39: // right arrow
-          var width = Math.max(sidebarMinimumWidth, preferredWidth);
-          if (width > sidebarVisibleWidth) resizeSidebar(width);
-          break;
-        case 191: // "/" or "?"
-        case 0:  // Firefox reports `keyCode` of `0` for "?"
-          if (event.shiftKey) kbdShortcuts.className = 'active';
-          break;
-      }
-    }
-  };
-
-  document.onclick = function () {
-    kbdShortcuts.className = '';
-  };
-
-  editor.ondragenter = returnFalse;
-  editor.ondragover = returnFalse;
-  editor.ondrop = function (event) {
-    var
-      dataTransfer = event.dataTransfer,
-      url = dataTransfer.getData('URL'),
-      file, match, reader,
-      insertImage = function (uri) {
-        var
-          value = editor.value,
-          start = editor.selectionStart,
-          end = editor.selectionEnd,
-          alt = value.substring(start, end) || 'alt';
-
-        value =
-          value.substr(0, start) +
-          '![' + alt + '](' + uri + ')' +
-          value.substr(end);
-
-        setValue(value, start += 2, start + alt.length); // '!['.length === 2
-      },
-      insertText = function (text) {
-        var
-          value = editor.value,
-          start = editor.selectionStart;
-
-        value =
-          value.substr(0, start) + text +
-          value.substr(editor.selectionEnd);
-
-        setValue(value, start, start + text.length);
-      };
-
-    if (url) {
-      // FIXME: `url` does not necessarily identify an _image_.
-      insertImage(url);
-    } else if (
-      // Avert your eyes, Douglas. I'd prefer
-      // to avoid three levels of nesting here.
-      typeof FileReader === 'function' &&
-      (file = dataTransfer.files[0]) &&
-      (match = /^(image|text)\//.exec(file.type))) {
-
-      reader = new FileReader();
-      if (match[1] === 'image') {
-        reader.onload = function (event) {
-          insertImage(event.target.result);
-        };
-        reader.readAsDataURL(file);
-      } else {
-        reader.onload = function (event) {
-          insertText(event.target.result);
-        };
-        reader.readAsText(file);
-      }
-      return false;
-    }
-  };
-
-  window.onpopstate = function () {
-    render(decode(documentHash()), true);
-  };
-
-  dragger.onselectstart = returnFalse; // prevent text selection
-
-  dragger.onmousedown = function (event) {
-    windowWidth = window.innerWidth || Infinity;
-    body.className = 'dragging';
-    draggerPosition = (event || window.event).pageX;
-    dragging = true;
-  };
-
-  document.onmousemove = function (event) {
-    if (!dragging) return;
-    var
-      x = (event || window.event).pageX,
-      w = Math.max(0, sidebarVisibleWidth + x - draggerPosition);
-
-    // Restrict maximum width to `windowWidth` - 15 (scrollbar width)
-    // - 4 (`#dragger` width + borders).
-    if (w < windowWidth - 18) {
-      resizeSidebar(preferredWidth = w);
-      document.cookie =
-        'w=' + w + '; expires=Fri, 01 Feb 3456 07:08:09 UTC; path=/';
-      draggerPosition = x;
-    }
-  };
-
-  document.onmouseup = function () {
-    if (!dragging) return;
-    body.className = '';
-    dragging = false;
-  };
 
   // INITIALIZATION //
 
