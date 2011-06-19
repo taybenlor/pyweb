@@ -10,8 +10,9 @@ window.pageLoaded = function(){
   /* Editor */
   var Mode = require("ace/mode/python").Mode;
   editor = ace.edit("editor");
-  editor.setTheme("ace/theme/twilight");
+  editor.setTheme("ace/theme/gumby");
   editor.getSession().setMode(new Mode());
+  editor.setShowPrintMargin(false);
 };
 
 // print function which the Python engine will call

@@ -156,26 +156,14 @@ body {
   }
   
   #editor {
-    width: 99%;
     border: none;
     box-shadow: 0 0 1px black;
     height: 200px;
-    overflow: auto;
-    padding: 0.5%;
+    padding: 0;
     position: relative;
-    white-space: nowrap; 
+    width: 100%;
   }
 
-  #the_input{
-    width: 99%;
-    border: none;
-    box-shadow: 0 0 1px black;
-    padding: 0.5%;
-    white-space: nowrap; 
-    overflow: auto;
-    height: 200px;
-  }
-  
   #the_output{
     margin-top: 24px;
     background: white;
