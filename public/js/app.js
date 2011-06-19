@@ -11,9 +11,11 @@ window.pageLoaded = function(){
   var Mode = require("ace/mode/python").Mode;
   editor = ace.edit("editor");
   editor.setTheme("ace/theme/gumby");
-  editor.getSession().setMode(new Mode());
   editor.setShowPrintMargin(false);
+  editor.getSession().setMode(new Mode());
+  editor.getSession().setValue("import sys\n\nprint 'Hello world! This is Python {} on {}'.format(sys.version, sys.platform)\n\nprint 'Here are some numbers:', [2*x for x in range(5)][:4]");
 };
+
 
 // print function which the Python engine will call
 var lines = [], printed = false;
@@ -23,36 +25,45 @@ function print(text) {
   printed = true;
 }
 
+
 function execute(text) {
   lines = [];
   printed = false;
 
-  var element = document.getElementById('the_output');
-  if (!element) 
-    return; // perhaps during startup
-
+  var li = document.createElement('li'), good = true;
   var ptr = window.Module.Pointer_make(window.Module.intArrayFromString(text), 0, 2); // leak!
   try {
     window.Module._PyRun_SimpleStringFlags(ptr, 0);
   } 
   catch(e) {
-    if (e === 'halting, since this is the first run') return;
-    element.innerHTML = 'JS crash: |<b>' + e + '</b>|. Please let us know about this problem!<hr>' + element.innerHTML;
-    return;
+    if (e === 'halting, since this is the first run') 
+      return;
+    li.innerHTML = 'JS crash: |<b>' + e + '</b>|. Please let us know about this problem!';
+    li.className = 'death';
+    good = false;
+  }
+  
+  if (good) {
+    if (printed) {
+      var linesHTML = '', line;
+      for (var i = 0; i < lines.length; i++) {
+        line = lines[i];
+        linesHTML += (line == '') ? '\n' : line;
+      }
+      li.innerText = linesHTML;
+    } 
+    else {
+      li.innerHTML = ''; //<small><i>(no output)</i></small>';
+    }
   }
 
-  if (printed) {
-    var lines_html = "";
-    for(var i = 0; i < lines.length; i++){
-      lines_html += lines[i].replace("<","&lt;", "g") + "<br>"
-    }
-    lines_html += "<hr>"
-    element.innerHTML = lines_html + element.innerHTML;
-  } 
-  else {
-    element.innerHTML = '<small><i>(no output)</i></small><hr>' + element.innerHTML;
-  }
+  var output = document.getElementById('output');
+  if (output.hasChildNodes())
+    output.insertBefore(li, output.firstChild);
+  else
+    output.appendChild(li);
 }
+
 
 function doRun() {
   args = ['-S', '-c', 'print ""'];
