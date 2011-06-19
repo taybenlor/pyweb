@@ -46,15 +46,7 @@
     <pre id="editor">import sys
 print 'Hello world! This is Python {} on {}'.format(sys.version, sys.platform)
 
-print 'Here are some numbers:', [2*x for x in range(5)][:4]
-    </pre>
-    <!--
-    <textarea id="the_input" class="code">import sys
-print 'Hello world! This is Python {} on {}'.format(sys.version, sys.platform)
-
-print 'Here are some numbers:', [2*x for x in range(5)][:4]
-    </textarea>
-    -->
+print 'Here are some numbers:', [2*x for x in range(5)][:4]</pre>
     <div id="the_output" class="code"></div>
   </div>
   <footer>
@@ -67,7 +59,7 @@ print 'Here are some numbers:', [2*x for x in range(5)][:4]
   <!-- JavaScript at the bottom for fast page loading -->
   <script src="/js/libs/flow-1.1.1.dev.js"></script>
   <script src="/js/libs/ace/ace.js"></script>
-  <script src="/js/libs/ace/theme-twilight.js" type="text/javascript" charset="utf-8"></script>
+  <script src="/js/libs/ace/theme-gumby.js" type="text/javascript" charset="utf-8"></script>
   <script src="/js/libs/ace/mode-python.js" type="text/javascript" charset="utf-8"></script>
 
   <script src="/js/mylibs/python2.7.1.js"></script>
@@ -92,8 +84,9 @@ print 'Here are some numbers:', [2*x for x in range(5)][:4]
     window.onload = function() {
       var Mode = require("ace/mode/python").Mode;
       editor = ace.edit("editor");
-      editor.setTheme("ace/theme/twilight");
+      editor.setTheme("ace/theme/gumby");
       editor.getSession().setMode(new Mode());
+      editor.setShowPrintMargin(false);
     };
     window.pageLoaded();
   </script>
