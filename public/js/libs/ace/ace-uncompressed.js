@@ -5041,6 +5041,7 @@ else
     };
 
 exports.scrollbarWidth = function() {
+    return 8;
 
     var inner = exports.createElement("p");
     inner.style.width = "100%";

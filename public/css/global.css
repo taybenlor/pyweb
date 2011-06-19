@@ -4,6 +4,8 @@
 }
 
 
+
+
 /*		Default Layout: 992px. 
 		Gutters: 24px.
 		Outer margins: 48px.
@@ -73,8 +75,8 @@ body {
     }
     
     header menu{
-      margin-top: -30px;
-      margin-left: 120px;
+      margin-top: -28px;
+      margin-left: 100px;
     }
     
       #run{
@@ -162,8 +164,41 @@ body {
     padding: 0;
     position: relative;
     width: 100%;
+    
+    color: white;
+    background: #141414;
+  }
+  
+  /* Turn on a 13x13 scrollbar */
+  #editor ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
   }
 
+  #editor ::-webkit-scrollbar-track:vertical {    
+    background-color: #141414;
+  }
+  
+  #editor ::-webkit-scrollbar-track:horizontal {    
+    background-color: #141414;
+  }
+  
+  /* Track below and above */
+  #editor ::-webkit-scrollbar-track-piece {    
+    background-color: #141414;
+  }
+  
+  /* The thumb itself */
+  #editor ::-webkit-scrollbar-thumb:vertical {
+    background-color: rgba(255,255,255,0.5);
+    -webkit-border-radius: 4px;
+  }
+  
+  #editor ::-webkit-scrollbar-thumb:horizontal {
+    background-color: rgba(255,255,255,0.5);
+    -webkit-border-radius: 4px;
+  }
+  
   #the_output{
     margin-top: 24px;
     background: white;
