@@ -1,7 +1,7 @@
 var editor;
 
 window.pageLoaded = function(){
-  //doRun(); //Do our initial checks
+  doRun(); //Do our initial checks
   var run_button = document.getElementById("run");
   run_button.addEventListener("click", function(){
     execute(editor.getSession().getValue());
