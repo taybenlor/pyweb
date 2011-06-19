@@ -54,7 +54,7 @@ body {
       color: #EEEEEE;
       text-shadow: 0 1px rgba(0,0,0,0.6), 0 -1px rgba(0,0,0,0.6);
       margin-left: 10px;
-      margin-top: 5px;
+      padding-top: 3px;
       text-align: left;
     }
     
@@ -210,7 +210,22 @@ body {
         border-top: none;
         margin-top: 0;
       }
-  
+
+    #output .jsdeath {
+      color: red;
+    }
+      #output .jsdeath b {
+        font-weight: bold;
+      }
+    #output .input {
+      font-style: italic;
+      color: blue;
+    }
+    #output .traceback {
+      font-style: italic;
+      color: red;
+    }
+
   #output_container{
     margin-top: 24px;
     background: white;

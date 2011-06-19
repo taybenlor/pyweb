@@ -20,8 +20,8 @@ window.pageLoaded = function(){
 // print function which the Python engine will call
 var lines = [], printed = false;
 
-function print(text) {
-  lines.push(text);
+function print(text, klass) {
+  lines.push({value: text, klass: klass});
   printed = true;
 }
 
@@ -39,18 +39,26 @@ function execute(text) {
     if (e === 'halting, since this is the first run') 
       return;
     li.innerHTML = 'JS crash: |<b>' + e + '</b>|. Please let us know about this problem!';
-    li.className = 'death';
+    li.className = 'jsdeath';
     good = false;
   }
   
   if (good) {
     if (printed) {
-      var linesHTML = '', line;
+      var linesHTML = '', line, value;
       for (var i = 0; i < lines.length; i++) {
         line = lines[i];
-        linesHTML += (line == '') ? '\n' : line;
+        if (line.value == '')
+          linesHTML += '\n';
+        else {
+          value = line.value.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+          if (line.klass)
+            linesHTML += '<span class="' + line.klass + '">' + value + '</span>';
+          else
+            linesHTML += value;
+        }
       }
-      li.innerText = linesHTML;
+      li.innerHTML = linesHTML;
     } 
     else {
       li.innerHTML = ''; //<small><i>(no output)</i></small>';
