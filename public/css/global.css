@@ -179,6 +179,20 @@ body {
         border-top: none;
         margin-top: 0;
       }
+    #output .jsdeath {
+      color: red;
+    }
+      #output .jsdeath b {
+        font-weight: bold;
+      }
+    #output .input {
+      font-style: italic;
+      color: blue;
+    }
+    #output .traceback {
+      font-style: italic;
+      color: red;
+    }
 
   #output_container{
     margin-top: 24px;
