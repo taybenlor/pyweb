@@ -40,6 +40,8 @@ body {
     
     position: relative;
     
+    -webkit-box-shadow: inset 0 0 1px rgba(0,0,0,0.2);  
+    -moz-box-shadow: inset 0 0 1px rgba(0,0,0,0.2);
     box-shadow: inset 0 0 1px rgba(0,0,0,0.2);
     
   }
@@ -69,12 +71,15 @@ body {
       
     button{
       background: #2E2E2E;
-      background: -webkit-linear-gradient(rgba(62, 62, 62, 0.9), rgba(46, 46, 46, 0.7));
+      background: -webkit-linear-gradient(#2E2E2E), #1E1E1E);
       font-size: 13px;
       padding: 4px;
       
       border: 1px solid rgba(0,0,0,0.1);
       border-bottom: 1px solid #424242;
+      
+      -webkit-box-shadow: inset 0 -1px rgba(255,255,255,0.1), 0 1px rgba(0,0,0,0.2);
+      -moz-box-shadow: inset 0 -1px rgba(255,255,255,0.1), 0 1px rgba(0,0,0,0.2);
       box-shadow: inset 0 -1px rgba(255,255,255,0.1), 0 1px rgba(0,0,0,0.2);
       
       -webkit-border-radius: 4px;
@@ -96,7 +101,11 @@ body {
       
       header button:active{
         background: rgba(0,0,0,0.1);
+        
+        -webkit-box-shadow: inset 0 0 2px rgba(0,0,0,0.2);
+        -moz-box-shadow: inset 0 0 2px rgba(0,0,0,0.2);
         box-shadow: inset 0 0 2px rgba(0,0,0,0.2);
+        
         border: 1px solid rgba(0,0,0,0.1);
         
         color: #1C1C1C;
@@ -142,7 +151,11 @@ body {
   
   #editor {
     border: none;
+    
+    -moz-box-shadow: 0 0 1px black;
+    -webkit-box-shadow: 0 0 1px black;
     box-shadow: 0 0 1px black;
+    
     height: 300px;
     padding: 0;
     position: relative;
@@ -152,18 +165,42 @@ body {
     background: #141414;
   }
   
-  /* Turn on a 13x13 scrollbar */
-  #editor ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
+    /* Turn on a 13x13 scrollbar */
+    #editor ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+  
+    #editor ::-webkit-scrollbar-track:vertical {    
+      background-color: #141414;
+    }
+  
+    #editor ::-webkit-scrollbar-track:horizontal {    
+      background-color: #141414;
+    }
+  
+    /* Track below and above */
+    #editor ::-webkit-scrollbar-track-piece {    
+      background-color: #141414;
+    }
+  
+    /* The thumb itself */
+    #editor ::-webkit-scrollbar-thumb:vertical {
+      background-color: rgba(159, 159, 159, 0.5);
+      -webkit-border-radius: 4px;
+    }
+  
+    #editor ::-webkit-scrollbar-thumb:horizontal {
+      background-color: rgba(159, 159, 159, 0.5);
+      -webkit-border-radius: 4px;
+    }
   
   #output {
     list-style: none;
     margin-left: 0;
   }
     #output li {
-      border-top: 1px dotted black;
+      border-top: 1px dotted #9F9F9F;
       font-family: monospace;
       margin-top: 3px;
       padding: 3px;
@@ -173,39 +210,37 @@ body {
         border-top: none;
         margin-top: 0;
       }
-
-<<<<<<< HEAD
-  #editor ::-webkit-scrollbar-track:vertical {    
-    background-color: #141414;
-  }
-  
-  #editor ::-webkit-scrollbar-track:horizontal {    
-    background-color: #141414;
-  }
-  
-  /* Track below and above */
-  #editor ::-webkit-scrollbar-track-piece {    
-    background-color: #141414;
-  }
-  
-  /* The thumb itself */
-  #editor ::-webkit-scrollbar-thumb:vertical {
-    background-color: rgba(255,255,255,0.5);
-    -webkit-border-radius: 4px;
-  }
-  
-  #editor ::-webkit-scrollbar-thumb:horizontal {
-    background-color: rgba(255,255,255,0.5);
-    -webkit-border-radius: 4px;
-  }
   
   #output_container{
     margin-top: 24px;
     background: white;
     height: 136px;
     overflow-y: scroll;
+    
+    -webkit-box-shadow: 0 0 1px black;
+    -moz-box-shadow: 0 0 1px black;
     box-shadow: 0 0 1px black;
   }
+
+    #output_container::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    #output_container::-webkit-scrollbar-track:vertical {    
+      background-color: white;
+    }
+  
+    /* Track below and above */
+    #output_container::-webkit-scrollbar-track-piece {    
+      background-color: white;
+    }
+  
+    /* The thumb itself */
+    #output_container::-webkit-scrollbar-thumb:vertical {
+      background-color: rgba(159, 159, 159, 0.5);
+      -webkit-border-radius: 4px;
+    }
 
 /*	
  *  Mobile/Tablet/Embedded layout
@@ -228,7 +263,7 @@ body {
 	  border-top: 1px solid #212121;
 	}
 	
-	#editor, #the_output{
+	#editor, #output_container{
 	  margin: 0;
 	}
 	
