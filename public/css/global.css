@@ -3,7 +3,9 @@
   font-family: monospace;
 }
 
-
+.closed{
+  display: none;
+}
 
 
 /*		Default Layout: 992px. 

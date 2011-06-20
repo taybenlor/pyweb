@@ -29,11 +29,20 @@ those of the authors and should not be interpreted as representing official
 policies, either expressed or implied, of David Chambers.
 */
 
+/* Hashify - Based on http://hashify.me
+ * Original Author: David Chambers
+ * Rewrite as a Library: Ben Taylor
+ *
+ * Should support:
+ * encode(text) -> hashified text
+ * decode(text) -> unhashified text
+ * loadUrl(url) -> text loaded from a hashified URL
+ * createUrl(text) -> url for that text
+ */
+
 (function (document, window, JSON, Math) {
   
-  var 
-    
-    Hashify = window.Hashify = {
+  var Hashify = window.Hashify = {
       encode: function (text) {
         return window.btoa(window.unescape(encodeURIComponent(text)));
       },
@@ -41,15 +50,8 @@ policies, either expressed or implied, of David Chambers.
       decode: function (text) {
         return decodeURIComponent(window.escape(window.atob(text)));
       }
+      
     },
-
-    $ = function (id) {
-      return document.getElementById(id);
-    },
-
-    body = document.body,
-
-    editor = $('editor'),
 
     bitlyLimit = 15,
 
@@ -208,13 +210,16 @@ policies, either expressed or implied, of David Chambers.
 
         if (typeof arg === 'string') path += arg;
 
+        /*
         counter.innerHTML = len;
         counter.className =
           len > danger? 'danger': // too long for old versions of IE
           len > caution? 'caution': // too long to send to bit.ly
           '';
+        
         shorten.style.display = hash === lastSavedDocument? 'none': 'block';
-
+        */
+        
         if (pushStateExists) {
           history[save?'pushState':'replaceState'](null, null, path);
         } else {
@@ -238,45 +243,7 @@ policies, either expressed or implied, of David Chambers.
     }()),
 
     setShortUrl = (function (shorturl, textNode, tweet) {
-      shorturl = document.createElement('a');
-      shorturl.id = 'shorturl';
-      wrapper.insertBefore(shorturl, qrcode);
       return function (data) {
-        var tweetText, url = data.url;
-        if (textNode) shorturl.removeChild(textNode);
-        shorturl.appendChild(textNode = document.createTextNode(url));
-        shorturl.href = url;
-        qrcode.href = url + '.qrcode';
-        // set default tweet text
-        tweetText = ' ' + url;
-        tweetText = (
-          document.title.substr(0, 140 - tweetText.length) + tweetText
-        );
-        // Updating the `src` attribute of an `iframe` creates a
-        // history entry which interferes with navigation. Instead,
-        // we create a new `iframe` as per [Nir Levy's suggestion][1].
-        // 
-        // [1]: http://nirlevy.blogspot.com/2007/09/avoding-browser-history-when-changing.html
-
-        if (tweet && tweet.parentNode) {
-          wrapper.removeChild(tweet);
-        }
-        tweet = document.createElement('iframe');
-        tweet.id = 'tweet';
-        tweet.frameBorder = 0;
-        tweet.scrolling = 'no';
-        // Twitter insists on shortening _every_ URL passed to it,
-        // so we are forced to sneak in bit.ly URLs via the `text`
-        // parameter. Additionally, we give the `url` parameter an
-        // invalid value: this value is not displayed, but prevents
-        // Twitter from including the long URL in the tweet text.
-        tweet.src = (
-          'http://platform.twitter.com/widgets/tweet_button.html' +
-          '?count=none&related=hashify&url=foo&text=' +
-          encodeURIComponent(tweetText)
-        );
-        wrapper.insertBefore(tweet, shorturl);
-
         url = data.long_url.substr(hashifyMeLen);
         if (!(/^unpack:/.test(url))) {
           lastSavedDocument = url;
@@ -296,13 +263,11 @@ policies, either expressed or implied, of David Chambers.
 
       if (start != null) {
         editor.focus();
-        editor.setSelectionRange(start, end);
         updateView(text);
       }
     },
 
     render = (function (div) {
-      div = document.createElement('div');
       return function (text, setEditorValue) {
         var
           position = text.length - 1,
@@ -316,11 +281,8 @@ policies, either expressed or implied, of David Chambers.
           // normalize `editor.value`
           setEditorValue = true;
         }
-        markup.innerHTML = convert(text);
-        div.innerHTML = convert(text.match(/^.*$/m)[0]);
-        document.title = div.textContent || 'Hashify';
+        
         if (setEditorValue) setValue(text);
-        highlight();
         return false;
       };
     }()),
@@ -329,8 +291,6 @@ policies, either expressed or implied, of David Chambers.
       render(value);
       setLocation(encode(value));
     };
-
-  // EVENT HANDLERS //
 
   function shortenUrl() {
     var
@@ -393,28 +353,21 @@ policies, either expressed or implied, of David Chambers.
   (function () {
     var
       list,
-      mask = $('mask'),
       components = documentComponents(),
       hash = components[1],
       search = components[2],
-      presentationMode = search === presentationModeSpecifier;
+      presentationMode = false //search === presentationModeSpecifier;
 
     function ready() {
       if (presentationMode) {
         resizeSidebar(0);
       } else {
-        if (preferredWidth > sidebarMinimumWidth) {
-          resizeSidebar(preferredWidth);
-        }
         if (!editor.value) setValue('# Title', 2, 7);
       }
-      body.removeChild(mask);
       shortenUrl();
     }
     // initialize `#counter`
     setLocation(hash, search);
-
-    Hashify.editor(editor, false, editor.onkeyup);
 
     if (/^[A-Za-z0-9+/=]+$/.test(hash)) {
       if (!pushStateExists && location.pathname !== '/') {
