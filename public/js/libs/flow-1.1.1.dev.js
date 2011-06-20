@@ -339,17 +339,18 @@ var Flow = {
 					>var index = array.indexOf(2); // index is 0
 					>index = array.indexOf(7); // index is -1
 				*/
-				indexOf : function(fun, start) {
+				indexOf : function(elt, start) {
 					var that = this;
 
 					var i = start || 0;
 					
 					while (i < that.length) {
-						if (j === fun) {
+						if (that[i] === elt) {
 							return i;
 						}
 						i++;
 					}
+					return -1;
 				},
 				
 				/*
