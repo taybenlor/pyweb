@@ -1,0 +1,30 @@
+Generating the frozen bytecode
+* build and install python2.7 somewhere. here, the source is in /tmp/Python-2.7.1 and it was installed into /tmp/root. python needs to be installed for the freeze.py script to work
+* $ cat "import re" > code.py
+* $ /tmp/root/bin/python2.7 /tmp/Python-2.7.1/Tools/freeze/freeze.py code.py
+
+In a seperate unpack of the Python source code:
+* $ mkdir bin && cd bin
+* $ cp ${EMSCRIPTEN}/demos/python/ccproxy.py .
+* update the ..LLVM.. directories in the script source
+* $ chmod +x ccproxy.py
+* $ CC=./ccproxy.py ../configure --without-threads --without-pymalloc
+* EDIT pyconfig.h (in ./bin), remove
+    HAVE_GCC_ASM_FOR_X87
+    HAVE_SIG* except SIGNAL_H
+  and then add
+    #define PY_NO_SHORT_FLOAT_REPR
+* edit Python/frozen.c as required.
+## TODO insert sample here ##
+* $ make
+* the make process will fail but we will continue manually
+* $ mkdir pylibs && cd pylibs
+* $ ar x ../libpython2.7.a
+* $ cp ../Modules/python.o .
+* $ ${LLVM}/llvm-link -o=python.bc *.o
+* $ ${LLVM}/llvm-dis -show-annotations python.bc
+* this last step will produce the python.ll file which needs to be fed into the emscripten compiler
+
+Use the emscripten compiler to convert the LLVM python.ll file into JS
+* $ ./emscripten.py ~/downloads/Python-2.7.1/bin/pylibs/python.ll > python2.7.1.js
+
