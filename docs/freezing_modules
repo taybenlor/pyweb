@@ -15,7 +15,29 @@ In a seperate unpack of the Python source code:
   and then add
     #define PY_NO_SHORT_FLOAT_REPR
 * edit Python/frozen.c as required.
-## TODO insert sample here ##
+    #include "Python.h"
+    #include "/home/timlocal/working/freeze/M___future__.c"
+    #include "/home/timlocal/working/freeze/M_copy_reg.c"
+    #include "/home/timlocal/working/freeze/M_re.c"
+    #include "/home/timlocal/working/freeze/M_sre_compile.c"
+    #include "/home/timlocal/working/freeze/M_sre_constants.c"
+    #include "/home/timlocal/working/freeze/M_sre_parse.c"
+    #include "/home/timlocal/working/freeze/M_StringIO.c"
+    #include "/home/timlocal/working/freeze/M_types.c"
+    static struct _frozen Gumby_FrozenModules[] = {
+        /* python standard library */
+        {"__future__", M___future__, (int)sizeof(M___future__)},
+        {"copy_reg", M_copy_reg, (int)sizeof(M_copy_reg)},
+        {"re", M_re, (int)sizeof(M_re)},
+        {"sre_compile", M_sre_compile, (int)sizeof(M_sre_compile)},
+        {"sre_constants", M_sre_constants, (int)sizeof(M_sre_constants)},
+        {"sre_parse", M_sre_parse, (int)sizeof(M_sre_parse)},
+        {"StringIO", M_StringIO, (int)sizeof(M_StringIO)},
+        {"types", M_types, (int)sizeof(M_types)},
+        /* sentinel */
+        {0, 0, 0}
+    };
+    struct _frozen *PyImport_FrozenModules = Gumby_FrozenModules;
 * $ make
 * the make process will fail but we will continue manually
 * $ mkdir pylibs && cd pylibs
