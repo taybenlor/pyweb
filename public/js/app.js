@@ -23,7 +23,7 @@ function execute(text) {
 
   var li = document.createElement('li'), good = true;
   window.STDIO.prepare('yourcode.py', window.Module.intArrayFromString(editor.getSession().getValue(), true));
-  window.Module.run(['-S', '-B', '-v', 'yourcode.py']);
+  window.Module.run(['-S', '-B', 'yourcode.py']);
 ///  var ptr = window.Module.Pointer_make(window.Module.intArrayFromString(text), 0, 2, 'i8'); // leak!
   try {
 ///    window.Module._PyRun_SimpleStringFlags(ptr, 0);
@@ -63,7 +63,6 @@ function execute(text) {
           }
         }
         else {
-          console.log(line);
           if (line.klass)
             linesHTML += '<span class="' + line.klass + '">' + value + '</span>';
           else {
