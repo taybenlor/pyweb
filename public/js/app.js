@@ -1,13 +1,13 @@
 var editor;
 
-window.pageLoaded = function(){
-  doRun(); //Do our initial checks
-  var run_button = document.getElementById("run");
-  run_button.addEventListener("click", function(){
+window.pageLoaded = function() {
+  doRun(); // do our initial checks
+  var runButton = document.getElementById("run");
+  runButton.addEventListener("click", function(){
     execute(editor.getSession().getValue());
   });
   
-  /* Editor */
+  // editor
   var Mode = require("ace/mode/python").Mode;
   editor = ace.edit("editor");
   editor.setTheme("ace/theme/gumby");
@@ -17,25 +17,17 @@ window.pageLoaded = function(){
 };
 
 
-// print function which the Python engine will call
-var lines = [], printed = false;
-
-function print(text, klass) {
-  lines.push({value: text, klass: klass});
-  printed = true;
-}
-
-
 function execute(text) {
-  lines = [];
-  printed = false;
+  print.lines = [];
   var isTB = false, tbLine = -1;
 
   var li = document.createElement('li'), good = true;
-  var ptr = window.Module.Pointer_make(window.Module.intArrayFromString(text), 0, 2); // leak!
+  window.STDIO.prepare('yourcode.py', window.Module.intArrayFromString(editor.getSession().getValue(), true));
+  window.Module.run(['-S', '-B', '-v', 'yourcode.py']);
+///  var ptr = window.Module.Pointer_make(window.Module.intArrayFromString(text), 0, 2, 'i8'); // leak!
   try {
-    window.Module._PyRun_SimpleStringFlags(ptr, 0);
-  } 
+///    window.Module._PyRun_SimpleStringFlags(ptr, 0);
+  }
   catch(e) {
     if (e === 'halting, since this is the first run') 
       return;
@@ -45,15 +37,10 @@ function execute(text) {
   }
   
   if (good) {
-    if (printed) {
+    if (true) { // if (printed)
       var linesHTML = '', line, value, match;
-      for (var i = 0; i < lines.length; i++) {
-        line = lines[i];
-        if (line.value == '') {
-          linesHTML += '\n';
-          continue;
-        }
-
+      for (var i = 0; i < print.lines.length; i++) {
+        line = print.lines[i];
         value = line.value.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
         if (value.match(/^Traceback \(most recent call last\):$/) || value.match(/^\s+File /)) {
           if (!isTB) {
@@ -76,6 +63,7 @@ function execute(text) {
           }
         }
         else {
+          console.log(line);
           if (line.klass)
             linesHTML += '<span class="' + line.klass + '">' + value + '</span>';
           else {
@@ -110,13 +98,4 @@ function execute(text) {
 
 
 function doRun() {
-  args = ['-S', '-c', 'print ""'];
-  try {
-    window.Module.run(args);
-  } 
-  catch (e) {
-    if (e !== 'halting, since this is the first run') 
-      throw e;
-  }
-  execute("");
 }
