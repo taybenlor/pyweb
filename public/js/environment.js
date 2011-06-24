@@ -70,6 +70,7 @@ _sys_errlist[EPIPE] = Module.Pointer_make(Module.intArrayFromString("Broken pipe
 _sys_errlist[EDOM] = Module.Pointer_make(Module.intArrayFromString("Math argument out of domain of func"), 0, ALLOC_STATIC, "i8");
 _sys_errlist[ERANGE] = Module.Pointer_make(Module.intArrayFromString("Math result not representable"), 0, ALLOC_STATIC, "i8");
 
+
 STDIO.read = function(stream, ptr, size) {
   var info = STDIO.streams[stream];
   if (!info)
@@ -77,10 +78,11 @@ STDIO.read = function(stream, ptr, size) {
   if (info.interactiveInput) {
     for (var i = 0; i < size; i++) {
       if (info.data.length === 0) {
-        var rawData = Module.stdin(PRINTBUFFER.length > 0 ? PRINTBUFFER : '?');
-        __print__(null);
+        var items = print.items;
+        var rawData = Module.stdin(items.length > 0 ? items[items.length - 1].value: '?');
+        __print__(null); // flush
         print(rawData, 'input');
-        __print__(null);
+        __print__(null); // flush
         info.data = intArrayFromString(rawData).map(function(x) { return x === 0 ? 10 : x }); // change 0 to newline
         if (info.data.length === 0)
           return i;
@@ -104,10 +106,17 @@ STDIO.read = function(stream, ptr, size) {
 
 
 function print(text, klass) {
-  console.log('[print] "' + text + '"');
-  if (!print.lines) 
-    print.lines = [];
-  print.lines.push({value: text + '\n', klass: klass});
+  if (!print.items)
+    print.items = [];
+  print.items.push({value: text, klass: klass});
+}
+
+
+function __print__(text) {
+  if (text === null) { // flush
+    return;
+  }
+  print(text);
 }
 
 

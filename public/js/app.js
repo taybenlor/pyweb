@@ -18,7 +18,7 @@ window.pageLoaded = function() {
 
 
 function execute(text) {
-  print.lines = [];
+  print.items = [];
   var isTB = false, tbLine = -1;
 
   var li = document.createElement('li'), good = true;
@@ -38,11 +38,11 @@ function execute(text) {
   
   if (good) {
     if (true) { // if (printed)
-      var linesHTML = '', line, value, match;
-      for (var i = 0; i < print.lines.length; i++) {
-        line = print.lines[i];
-        value = line.value.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-        if (value.match(/^Traceback \(most recent call last\):$/) || value.match(/^\s+File /)) {
+      var linesHTML = '', item, value, match;
+      for (var i = 0; i < print.items.length; i++) {
+        item = print.items[i];
+        value = item.value.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        if (value.match(/^Traceback \(most recent call last\):/) || value.match(/^\s+File /)) {
           if (!isTB) {
             isTB = true;
             linesHTML += '<span class="traceback">';
@@ -63,11 +63,10 @@ function execute(text) {
           }
         }
         else {
-          if (line.klass)
-            linesHTML += '<span class="' + line.klass + '">' + value + '</span>';
-          else {
+          if (item.klass)
+            linesHTML += '<span class="' + item.klass + '">' + value + '</span>';
+          else
             linesHTML += value;
-          }
         }
 
       }
