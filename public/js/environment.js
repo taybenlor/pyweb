@@ -126,16 +126,6 @@ read = function read(url) {
 };
 
 
-_getuid = function _getuid() { 
-  return 100; 
-};
-
-
-_getgid = function _getgid() { 
-  return 100; 
-};
-
-
 var __ourstat = function __ourstat(ptr, f) {
   _memset(ptr, 0, $struct_stat___SIZE);
   HEAP[ptr + 16] = 0100000;       // st_mode = S_IFREG 
@@ -177,18 +167,6 @@ var _strerror = function _strerror(errnum) {
 };
 
 
-var _unlink = function _unlink(pathname) {
-  var pathStr = Pointer_stringify(pathname);
-  var fd = STDIO.filenames[pathStr];
-  if (fd === undefined) {
-    HEAP[___errno_location()] = ENOENT;
-    return -1;
-  }
-  delete STDIO.filenames[pathStr];
-  return 0;
-};
-
-
 var ___01open64_ = function ___01open64_(pathname, flags, mode) {
   var pathStr = Pointer_stringify(pathname);
   var fd = STDIO.filenames[pathStr];
@@ -210,25 +188,4 @@ var ___01lseeko64_ = function ___01lseeko64_(fd, offset, whence) {
 var ___01lseek64_ = function ___01lseek64(fd, offset, whence) {
   return ___01fseeko64_(fd, offset, whence);
 };
-
-
-_ungetc = function _ungetc(chr, stream) {
-  var f = STDIO.streams[stream];
-  if (f === undefined)
-    return -1; // EOF
-  if (!f.interactiveInput)
-    f.position--;
-  return chr;
-}
-
-
-var __IO_putc = function(c, stream) {
-  if (!Module._putc_ptr) 
-    Module._putc_ptr = _malloc(1);
-  HEAP[Module._putc_ptr] = c;
-  var ret = STDIO.write(stream, Module._putc_ptr, 1);
-  if (ret == -1)
-    return -1; // EOF
-  return c;
-}
 

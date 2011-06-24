@@ -21,8 +21,21 @@ function execute(text) {
   print.items = [];
   var isTB = false, tbLine = -1;
 
-  var li = document.createElement('li'), good = true;
-  window.STDIO.prepare('yourcode.py', window.Module.intArrayFromString(editor.getSession().getValue(), true));
+  var li = document.createElement('li');
+  var good = true;
+
+  var data = window.Module.intArrayFromString(editor.getSession().getValue(), true)
+  var fd = window.STDIO.filenames['yourcode.py'];
+  if (fd) {
+    var f = window.STDIO.streams[fd];
+    f.data = data;
+    f.position = 0;
+    f.eof = 0;
+    f.error = 0;
+  }
+  else
+    window.STDIO.prepare('yourcode.py', data);
+  
   window.Module.run(['-S', '-B', 'yourcode.py']);
 ///  var ptr = window.Module.Pointer_make(window.Module.intArrayFromString(text), 0, 2, 'i8'); // leak!
   try {
