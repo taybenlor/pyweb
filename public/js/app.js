@@ -8,7 +8,34 @@ function getEditor() {
 window['getEditor'] = getEditor;
 
 
+var loadPython = function loadPython() {
+  var xhr = new XMLHttpRequest();
+  xhr.onprogress = function(pe) {
+    console.log("progress", pe.lengthComputable, pe.total, pe.loaded);
+  };
+  xhr.addEventListener("loadstart", function(pe) { console.log("onloadstart"); }, false);
+  xhr.addEventListener("loadend", function(pe) { console.log("onloadend"); }, false);
+  xhr.addEventListener("error", function(pe) { console.log("onerror"); }, false);
+  xhr.addEventListener("abort", function(pe) { console.log("onabort"); }, false);
+  xhr.addEventListener("load", function(pe) { console.log("onload"); }, false);
+  xhr.addEventListener("readystatechange", function(e) {
+    if (xhr.readyState == 4) {
+      console.log("readystatechange", xhr.readyState);
+      var s = document.createElement('script');
+      s.type = 'text/javascript';
+      s.innerText = xhr.responseText;
+      document.head.appendChild(s);
+    }
+  });
+  console.log(xhr);
+  xhr.open("GET", "/js/mylibs/python2.7.1.closure.js");
+  xhr.send();
+};
+window['loadPython'] = loadPython;
+
+
 var pageLoaded = function pageLoaded() {
+  loadPython();
   doRun(); // do our initial checks
   var runButton = document.getElementById("run");
   runButton.addEventListener("click", function(){

@@ -14017,7 +14017,8 @@ var Text = function(parentEl) {
         var style = this.$measureNode.style;
         var computedStyle = dom.computedStyle(this.element);
         for (var prop in this.$fontStyles)
-            style[prop] = computedStyle[prop];
+            if (prop in computedStyle)
+                style[prop] = computedStyle[prop];
 
         var size = {
             height: this.$measureNode.offsetHeight,
