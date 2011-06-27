@@ -9,26 +9,44 @@ window['getEditor'] = getEditor;
 
 
 var loadPython = function loadPython() {
-  var xhr = new XMLHttpRequest();
-///  xhr.onprogress = function(pe) {
-///    console.log("progress", pe.lengthComputable, pe.total, pe.loaded);
-///  };
-  xhr.addEventListener("loadstart", function(pe) { console.log("onloadstart"); });
-  xhr.addEventListener("loadend", function(pe) { console.log("onloadend"); });
-  xhr.addEventListener("error", function(pe) { console.log("onerror"); });
-  xhr.addEventListener("abort", function(pe) { console.log("onabort"); });
-  xhr.addEventListener("load", function(pe) { console.log("onload"); });
-  xhr.addEventListener("progress", function(pe) { console.log("onprogress"); });
-  xhr.addEventListener("readystatechange", function(e) {
-    console.log("readystatechange", xhr.readyState);
-    if (xhr.readyState == 4) {
-      var s = document.createElement('script');
-      s.type = 'text/javascript';
-      s.innerText = xhr.responseText;
-      document.head.appendChild(s);
-    }
-  });
-  console.log(xhr);
+  var xhr = window.XMLHttpRequest ? new window.XMLHttpRequest() : new window.XctiveXObject("Microsoft.XMLHTTP");
+  var doLoad = function() {
+    var s = document.createElement('script');
+    s.type = 'text/javascript';
+    s.innerText = xhr.responseText;
+    document.head.appendChild(s);
+  };
+
+  // check for W3C Progress Event support
+  if ('onload' in xhr) {
+    ///xhr.addEventListener("loadstart", function(pe) { console.log("onloadstart"); }, false);
+    ///xhr.addEventListener("loadend", function(pe) { console.log("onloadend"); }, false);
+    xhr.addEventListener("error", function(pe) { 
+      console.log("onerror"); 
+///      Loader.hide();
+    }, false);
+    xhr.addEventListener("abort", function(pe) { 
+      console.log("onabort"); 
+///      Loader.hide();
+    }, false);
+    xhr.addEventListener("load", function(pe) {
+      doLoad();
+///      Loader.hide();
+    }, false);
+    xhr.addEventListener("progress", function(pe) { 
+      if (console && console.log)
+        console.log(pe.lengthComputable, pe.total, pe.loaded);
+    }, false);
+  }
+  else {
+    xhr.addEventListener("readystatechange", function(e) {
+      if (xhr.readyState == 4) {
+        doLoad();
+///        Loader.hide();
+      }
+    }, false);
+  }
+
   xhr.open("GET", "/js/mylibs/python2.7.1.closure.js");
   xhr.send();
 };
