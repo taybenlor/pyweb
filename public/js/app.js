@@ -10,17 +10,18 @@ window['getEditor'] = getEditor;
 
 var loadPython = function loadPython() {
   var xhr = new XMLHttpRequest();
-  xhr.onprogress = function(pe) {
-    console.log("progress", pe.lengthComputable, pe.total, pe.loaded);
-  };
-  xhr.addEventListener("loadstart", function(pe) { console.log("onloadstart"); }, false);
-  xhr.addEventListener("loadend", function(pe) { console.log("onloadend"); }, false);
-  xhr.addEventListener("error", function(pe) { console.log("onerror"); }, false);
-  xhr.addEventListener("abort", function(pe) { console.log("onabort"); }, false);
-  xhr.addEventListener("load", function(pe) { console.log("onload"); }, false);
+///  xhr.onprogress = function(pe) {
+///    console.log("progress", pe.lengthComputable, pe.total, pe.loaded);
+///  };
+  xhr.addEventListener("loadstart", function(pe) { console.log("onloadstart"); });
+  xhr.addEventListener("loadend", function(pe) { console.log("onloadend"); });
+  xhr.addEventListener("error", function(pe) { console.log("onerror"); });
+  xhr.addEventListener("abort", function(pe) { console.log("onabort"); });
+  xhr.addEventListener("load", function(pe) { console.log("onload"); });
+  xhr.addEventListener("progress", function(pe) { console.log("onprogress"); });
   xhr.addEventListener("readystatechange", function(e) {
+    console.log("readystatechange", xhr.readyState);
     if (xhr.readyState == 4) {
-      console.log("readystatechange", xhr.readyState);
       var s = document.createElement('script');
       s.type = 'text/javascript';
       s.innerText = xhr.responseText;
