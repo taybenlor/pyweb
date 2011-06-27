@@ -10,15 +10,25 @@ CLOSURE_JAR=${HOME}/reposs/closure-compiler/build/compiler.jar
 
 DEPENDS="Python-2.7.1.tar.bz2 environment.js app.js externs.js"
 
+HERE=$(cd `dirname ${0}` && pwd)
+LOG=${HERE}/compile.log
+rm -rf ${LOG}
+
+function log {
+  echo "[`date '+%R.%S %d/%m/%y'`] ${1}" >&2
+}
+
+
 # check we have all the dependencies before starting
 for dep in ${DEPENDS}; do
   if [ ! -r ${dep} ]; then
-    echo "Dependency '${dep}' not found!" >&2
+    log "Dependency '${dep}' not found!"
     exit 1
   fi
 done
 
 # extract Python
+log "Extracting Python"
 rm -rf Python-2.7.1
 tar jxf ${PYTHON_SRC}
 cd Python-2.7.1
@@ -31,11 +41,13 @@ chmod +x ccproxy.py
 sed -i "s@\.\.LLVM_GCC_DIR\.\.@${LLVM_GCC}@; s@\.\.LLVM_DIR\.\.@${LLVM}@" ccproxy.py
 
 # configure
-CC=./ccproxy.py ../configure --without-threads --without-pymalloc
+log "Configuring Python"
+CC=./ccproxy.py ../configure --without-threads --without-pymalloc &>> ${LOG}
 sed -i 's@HAVE_GCC_ASM_FOR_X87@PY_NO_SHORT_FLOAT_REPR@' pyconfig.h
 sed -i -r 's@(^#define\s+HAVE_SIG.*)@// \1@; s@^// (#define\s+HAVE_SIGNAL_H\s)@\1@' pyconfig.h
 
 # add the static modules we're after
+log "Adding static modules"
 cat > Modules/Setup.local <<EOF
 operator operator.c	              # operator.add() and similar goodies
 _random _randommodule.c	          # Random number generator
@@ -47,6 +59,7 @@ math mathmodule.c _math.c         # -lm # math library functions, e.g. sin()
 EOF
 
 # work out the frozen modules
+log "Adding frozen modules"
 mkdir _frozen
 cd _frozen
 cat > code.py <<EOF
@@ -59,12 +72,17 @@ import random
 import re
 import StringIO
 EOF
-${PYTHON_BIN} -S ../../Tools/freeze/freeze.py -X BaseHTTPServer -X FixTk -X SocketServer -X bdb -X ctypes -X difflib -X dis -X doctest -X dummy_thread -X dummy_threading -X email -X ftplib -X getopt -X getpass -X gettext -X httplib -X linecache -X locale -X logging -X mimetools -X mimetypes -X ntpath -X nturl2path -X optcode -X optparse -X os -X os2emxpath -X ptb -X pkgutil -X encodings -X posixpath -X pydoc -X quopri -X rfc822 -X site -X socket -X ssl -X struct -X subprocess -X sysconfig -X tempfile -X threading -X tty -X unittest -X webbrowser code.py
-sed '/__main__/d' frozen.c | awk '(!end){ print $0; } ($0 == "};"){ end=1; }' > ../../Python/frozen.c
+${PYTHON_BIN} -S ../../Tools/freeze/freeze.py -X BaseHTTPServer -X FixTk -X SocketServer -X bdb -X ctypes -X difflib -X dis -X doctest -X dummy_thread -X dummy_threading -X email -X ftplib -X getopt -X getpass -X gettext -X httplib -X linecache -X locale -X logging -X mimetools -X mimetypes -X ntpath -X nturl2path -X optcode -X optparse -X os -X os2emxpath -X ptb -X pkgutil -X encodings -X posixpath -X pydoc -X quopri -X rfc822 -X site -X socket -X ssl -X struct -X subprocess -X sysconfig -X tempfile -X threading -X tty -X unittest -X webbrowser code.py &>> ${LOG}
+sed '/__main__/d' frozen.c | awk '(!end){ print $0; } ($0 == "};"){ end=1; }' > ../../Python/frozen.c 
 cat >> ../../Python/frozen.c <<EOF
+
+// export the list of frozen modules globally
+struct _frozen *PyImport_FrozenModules = _PyImport_FrozenModules;
+
 // tell the interpreter we're running in embedded mode
 extern int Py_FrozenFlag;
 Py_FrozenFlag = 1;
+
 EOF
 rm frozen.c config.c M___main__.c
 cat M_*.c >> ../../Python/frozen.c
@@ -72,7 +90,8 @@ cd ..
 rm -rf _frozen 
 
 # make until failure
-make
+log "Building Python"
+make &>> ${LOG}
 
 # manually link and disassemble
 cd pylibs
@@ -85,9 +104,11 @@ ${LLVM}/llvm-dis -show-annotations python.bc
 cd ../../..
 
 # run byte code through emscripten
+log "Running emscripten"
 time ${EMSCRIPTEN}/emscripten.py Python-2.7.1/bin/pylibs/python.ll > python2.7.1.js
 
 # run the produced JS through closure
+log "Running closure"
 time java -Xmx2g -jar ${CLOSURE_JAR} \
   --compilation_level ADVANCED_OPTIMIZATIONS \
   --js_output_file python2.7.1.closure.js \
