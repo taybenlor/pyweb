@@ -1690,7 +1690,10 @@ new Flow.Plugin({
 								
 								// If "DOM" event, these don't support "on" attachments
 								if (/DOM/.test(type)) {
-									node._addEventListener(type, handler, false);
+									if (type === "DOMMouseScroll" && B.IE)
+									  node.attachEvent("onmousewheel", handler)
+									else
+                    node._addEventListener(type, handler, false);
 								} else {
 									node["on" + type] = handleEvent;
 								}
@@ -2802,7 +2805,7 @@ Example:
 	req.send();
 	(end code)
 */
-
+/*
 new Flow.Plugin({
 	name : "Remote",
 	version : "1.1.1",
@@ -3128,6 +3131,7 @@ new Flow.Plugin({
 	}()
 	
 });
+*/
 
 /*
 Namespace: The Viewport Namespace
