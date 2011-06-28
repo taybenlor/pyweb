@@ -1,19 +1,26 @@
 
 var Loader = { 
-  error: function(msg) {
-    var msg = document.getElementById('loader-msg');
+  error: function(text) {
+    var msg = document.getElementById('loader-text');
     msg.className = 'error';
-    msg.innerText = msg;
+    msg.innerText = text;
+    document.getElementById('loader-spinner').style.display = 'none';
+    document.getElementById('loader-msg').innerHTML = '';
   },
   hide: function() {
     document.getElementById('loader').style.display = 'none';
   },
   show: function() {
+    document.getElementById('loader-spinner').style.display = 'block';
+    var msg = document.getElementById('loader-text');
+    msg.className = '';
+    msg.innerText = 'Loading ...';
     document.getElementById('loader-msg').innerHTML = '';
     document.getElementById('loader').style.display = 'block';
   },
   update: function(loaded, outOf) {
-    document.getElementById('loader-msg').innerHTML = loaded + ' of ' + outOf;
+    var percent = (100.0 * loaded) / outOf;
+    document.getElementById('loader-msg').innerHTML = percent.toFixed(0) + '%';
   }
 };
 
@@ -60,21 +67,15 @@ var loadPython = function loadPython() {
 
   // check for W3C Progress Event support
   if ('onload' in xhr) {
-    xhr.addEventListener("error", function(pe) { 
-      console.log("onerror"); 
-      Loader.error("An error occurred while loading");
-    }, false);
-    xhr.addEventListener("abort", function(pe) { 
-      console.log("onabort"); 
-      Loader.error("Loading cancelled");
-    }, false);
+    xhr.addEventListener("error", function(pe) { Loader.error("An error occurred while loading"); }, false);
+    xhr.addEventListener("abort", function(pe) { Loader.error("Loading cancelled"); }, false);
     xhr.addEventListener("load", function(pe) {
       doLoad();
       Loader.hide();
     }, false);
     xhr.addEventListener("progress", function(pe) { 
-      if (console && console.log)
-        console.log(pe.lengthComputable, pe.total, pe.loaded);
+      if (pe.lengthComputable)
+        Loader.update(pe.loaded, pe.total);
     }, false);
   }
   else {
