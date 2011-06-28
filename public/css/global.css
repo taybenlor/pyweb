@@ -221,6 +221,13 @@ body {
       background-color: #401414;
       color: red;
     }
+
+    #editor #ieeditor {
+      font-family: monospace;
+      position: relative;
+      height: 100%;
+      width: 100%;
+    }
   
   #output {
     list-style: none;

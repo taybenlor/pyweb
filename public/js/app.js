@@ -1,26 +1,42 @@
 var editor;
 
+
+function addScriptResource(attrs) {
+  var s = document.createElement('script');
+  s.type = 'text/javascript';
+  for (var key in attrs)
+    s[key] = attrs[key];
+  document.body.appendChild(s);
+}
+
+
 function getEditor() {
-  if (!getEditor.editor)
-    getEditor.editor = ace.edit("editor");
-  return getEditor.editor;
+  if (!getEditor._editor) {
+    // Ace fails horribly in IE, so fake it
+    if (Flow.Browser.IE)
+      getEditor._editor = new IEEditor('editor');
+    else
+      getEditor._editor = ace.edit('editor');
+  }
+  return getEditor._editor;
 }
 window['getEditor'] = getEditor;
 
 
 var loadPython = function loadPython() {
-  var xhr = window.XMLHttpRequest ? new window.XMLHttpRequest() : new window.XctiveXObject("Microsoft.XMLHTTP");
+  // seriously, screw IE
+  if (Flow.Browser.IE) {
+    addScriptResource({src: '/js/mylibs/python2.7.1.closure.js'});
+    return;
+  }
+
+  var xhr = new window.XMLHttpRequest();
   var doLoad = function() {
-    var s = document.createElement('script');
-    s.type = 'text/javascript';
-    s.innerText = xhr.responseText;
-    document.head.appendChild(s);
+    addScriptResource({innerText: xhr.responseText});
   };
 
   // check for W3C Progress Event support
   if ('onload' in xhr) {
-    ///xhr.addEventListener("loadstart", function(pe) { console.log("onloadstart"); }, false);
-    ///xhr.addEventListener("loadend", function(pe) { console.log("onloadend"); }, false);
     xhr.addEventListener("error", function(pe) { 
       console.log("onerror"); 
 ///      Loader.hide();
@@ -39,12 +55,12 @@ var loadPython = function loadPython() {
     }, false);
   }
   else {
-    xhr.addEventListener("readystatechange", function(e) {
+    xhr.onreadystatechange = function(e) {
       if (xhr.readyState == 4) {
         doLoad();
 ///        Loader.hide();
       }
-    }, false);
+    };
   }
 
   xhr.open("GET", "/js/mylibs/python2.7.1.closure.js");
@@ -56,14 +72,14 @@ window['loadPython'] = loadPython;
 var pageLoaded = function pageLoaded() {
   loadPython();
   doRun(); // do our initial checks
-  var runButton = document.getElementById("run");
-  runButton.addEventListener("click", function(){
+  var runButton = document.getElementById('run');
+  runButton.addEventListener("click", function(event){
     execute();
-  });
+  }, false);
   
   // editor
-  var Mode = require("ace/mode/python").Mode;
   editor = getEditor();
+  var Mode = require("ace/mode/python").Mode;
   editor.setTheme("ace/theme/gumby");
   editor.setShowPrintMargin(false);
   editor.getSession().setMode(new Mode());

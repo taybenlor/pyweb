@@ -65,22 +65,23 @@
     </menu>
   </footer>
   
-  <!-- JavaScript at the bottom for fast page loading -->
-  <!-- <script src="/js/libs/flow-1.1.1.dev.js"></script> -->
+  <!-- Flow for Javascript compatibility in IE -->
+  <script src="/js/libs/flow-1.1.1.dev.js"></script>
+
+  <!-- Real editor -->
   <script src="/js/libs/ace/ace-uncompressed.js"></script>
   <script src="/js/libs/ace/theme-gumby.js" type="text/javascript" charset="utf-8"></script>
   <script src="/js/libs/ace/mode-python.js" type="text/javascript" charset="utf-8"></script>
+  
+  <!-- Fake editor for IE -->
+  <script src="/js/mylibs/ieeditor.js"></script>
 
   <!--
   <script src="/js/libs/base64.js"></script>
   <script src="/js/libs/hashify.js"></script>
   -->
-  <script type="text/javascript">
-    var Module = {
-      noInitialRun: true
-    };
-  </script>
-  <!-- <script src="/js/mylibs/python2.7.1.closure.js"></script> -->
+
+  <!-- Our app -->
   <script src="/js/app.js"></script>
 
   <!--[if lt IE 7 ]>
@@ -98,7 +99,10 @@
   </script>
   -->
 
-  <script>
+  <script type="text/javascript">
+    var Module = {
+      noInitialRun: true
+    };
     window.pageLoaded();
   </script>
 </body>
