@@ -1,12 +1,33 @@
-var editor;
+
+var Loader = { 
+  error: function(msg) {
+    var msg = document.getElementById('loader-msg');
+    msg.className = 'error';
+    msg.innerText = msg;
+  },
+  hide: function() {
+    document.getElementById('loader').style.display = 'none';
+  },
+  show: function() {
+    document.getElementById('loader-msg').innerHTML = '';
+    document.getElementById('loader').style.display = 'block';
+  },
+  update: function(loaded, outOf) {
+    document.getElementById('loader-msg').innerHTML = loaded + ' of ' + outOf;
+  }
+};
 
 
-function addScriptResource(attrs) {
-  var s = document.createElement('script');
-  s.type = 'text/javascript';
+function addScriptResource(attrs, onLoaded) {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.onreadystatechange = function() {
+    if ((this.readyState == 'loaded' || this.readyState == 'complete') && onLoaded)
+      onLoaded();
+  };
   for (var key in attrs)
-    s[key] = attrs[key];
-  document.body.appendChild(s);
+    script[key] = attrs[key];
+  document.body.appendChild(script);
 }
 
 
@@ -26,7 +47,9 @@ window['getEditor'] = getEditor;
 var loadPython = function loadPython() {
   // seriously, screw IE
   if (Flow.Browser.IE) {
-    addScriptResource({src: '/js/mylibs/python2.7.1.closure.js'});
+    addScriptResource({src: '/js/mylibs/python2.7.1.closure.js'}, function() {
+      Loader.hide();
+    });
     return;
   }
 
@@ -39,15 +62,15 @@ var loadPython = function loadPython() {
   if ('onload' in xhr) {
     xhr.addEventListener("error", function(pe) { 
       console.log("onerror"); 
-///      Loader.hide();
+      Loader.error("An error occurred while loading");
     }, false);
     xhr.addEventListener("abort", function(pe) { 
       console.log("onabort"); 
-///      Loader.hide();
+      Loader.error("Loading cancelled");
     }, false);
     xhr.addEventListener("load", function(pe) {
       doLoad();
-///      Loader.hide();
+      Loader.hide();
     }, false);
     xhr.addEventListener("progress", function(pe) { 
       if (console && console.log)
@@ -58,7 +81,7 @@ var loadPython = function loadPython() {
     xhr.onreadystatechange = function(e) {
       if (xhr.readyState == 4) {
         doLoad();
-///        Loader.hide();
+        Loader.hide();
       }
     };
   }
@@ -78,7 +101,7 @@ var pageLoaded = function pageLoaded() {
   }, false);
   
   // editor
-  editor = getEditor();
+  var editor = getEditor();
   var Mode = require("ace/mode/python").Mode;
   editor.setTheme("ace/theme/gumby");
   editor.setShowPrintMargin(false);

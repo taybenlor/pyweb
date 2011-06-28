@@ -166,6 +166,7 @@ body {
   
   #main{
     margin-top: 20px;
+    position: relative;
   }
   
   #editor {
@@ -289,6 +290,36 @@ body {
     #output_container::-webkit-scrollbar-thumb:vertical {
       background-color: rgba(159, 159, 159, 0.5);
       -webkit-border-radius: 4px;
+    }
+    
+  #loader {
+    background-color: #343444;
+    color: #EEEEEE;
+    font-family: 'Damion', arial, serif;
+    font-weight: normal;
+    height: 100%;
+    position: absolute;
+    text-align: center;
+    text-shadow: 0 1px rgba(0,0,0,0.6), 0 -1px rgba(0,0,0,0.6);
+    top: 0;
+    width: 100%;
+    z-index: 10;
+  }
+    #loader #loader-spinner{
+      margin: 2em 0;
+    }
+    #loader #loader-text {
+      font-size: 24px;
+      line-height: 24px;
+      margin: 2em 0;
+    }
+    #loader #loader-msg {
+      font-size: 16px;
+      line-height: 16px;
+      margin: 2em 0;
+    }
+    #loader .error {
+      color: #FFADAD;
     }
 
 /*	
