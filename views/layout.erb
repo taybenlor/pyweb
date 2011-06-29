@@ -33,44 +33,7 @@
       <p>If you are on a mobile device you may be able to turn it on, or it may be unsupported by your browser</p>
     </div>
   </noscript>
-  <header>
-    <h1>Gumby <span class="heart">&hearts;</span></h1>
-    <h2>Python</h2>
-    <menu type="toolbar">
-      <button id="share">Share</button>
-      <button id="run">Run</button>
-    </menu>
-  </header>
-  <div id="main" role="main">
-
-    <pre id="editor"></pre>
-    <div id="output_container">
-      <ol id="output"></ol>
-    </div>
-    <div id="about-box" class="box closed">
-      <p>Gumby is a way to quickly test and share short Python snippets on the web. It is based on a conglomerate of JavaScript technologies including <a href="https://github.com/kripken/emscripten">Emscripten</a> (a llvm JS compiler), <a href="https://github.com/ajaxorg/ace">ACE</a> (a web code editor) and <a href="https://bitbucket.org/davidchambers/hashify.me/src">Hashify</a> (a URL text-storage technique). Gumby has a few simple aims:</p>
-      <ul>
-        <li>Allow restricted devices to perform simple coding tasks with Python</li>
-        <li>Enable quick creation and testing of Python snippets</li>
-        <li>Encourage sharing Python in a way that is easy to modify and evaluate</li>
-      </ul>
-    </div>
-    
-    <div id="help-box" class="box closed">
-    </div>
-
-    <div id="loader">
-      <div id="loader-spinner"><img width="32" height="32" src="/images/ajax-loader.gif" alt="" /></div>
-      <div id="loader-text">Loading ...</div>
-      <div id="loader-msg"></div>
-    </div>
-  </div>
-  <footer>
-    <menu type="toolbar">
-      <button id="about">About</button>
-      <button id="help">Help</button>
-    </menu>
-  </footer>
+  <%= yield%>
   
   <!-- Flow for Javascript compatibility in IE -->
   <script src="/js/libs/flow-1.1.1.dev.js"></script>

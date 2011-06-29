@@ -1,0 +1,54 @@
+<header>
+  <h1>Gumby <span class="heart">&hearts;</span></h1>
+  <h2>Python</h2>
+  <menu type="toolbar">
+    <button id="share">Share</button>
+    <button disabled id="run" class="disabled">Run</button>
+  </menu>
+</header>
+
+<div id="main" role="main">
+  <pre id="editor"><% if @code %><%= @code %><% else %>name = raw_input("What is your name? ")
+print "Hello %s :)" % name<% end %></pre>
+
+  <div id="output_container">
+    <ol id="output"></ol>
+  </div>
+  
+  <div id="about-box" class="box closed">
+    <h1>About Gumby</h1>
+    <h2>Gumby is a way to <em>quickly</em> test and share <em>short</em> Python snippets on the web.</h2>
+    <p>It is based on a conglomerate of JavaScript technologies including <a href="https://github.com/kripken/emscripten">Emscripten</a> (a llvm JS compiler) and <a href="https://github.com/ajaxorg/ace">ACE</a> (a web code editor).</p>
+    <p>Gumby has a few simple aims:</p>
+    <ul>
+      <li>Allow restricted devices to perform simple coding tasks with Python</li>
+      <li>Enable quick creation and testing of Python snippets</li>
+      <li>Encourage sharing Python in a way that is easy to modify and evaluate</li>
+    </ul>
+    
+    <h1>Technical Details</h1>
+    <p></p>
+      
+    <h1>Authors</h1>
+    <ul class="authors">
+      <li><a href="tim.com">Tim Dawborn</a></li>
+      <li><a href="http://twitter.com/taybenlor">Ben Taylor</a></li>
+    </ul>
+  </div>
+  
+  <div id="help-box" class="box closed">
+  </div>
+
+  <div id="loader">
+    <div id="loader-spinner"><img src="/images/ajax-loader.gif" alt="" /></div>
+    <div id="loader-text">Loading ...</div>
+    <div id="loader-msg"></div>
+  </div>
+</div>
+
+<footer>
+  <menu type="toolbar">
+    <button id="about">About</button>
+    <button id="help">Help</button>
+  </menu>
+</footer>

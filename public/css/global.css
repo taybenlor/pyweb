@@ -7,6 +7,16 @@
   display: none;
 }
 
+.hidden {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+}
+
+em{
+  font-style: italic;
+}
 
 /*		Default Layout: 992px. 
 		Gutters: 24px.
@@ -62,7 +72,7 @@ body {
     }
     
       header h1 .heart{
-        color: #EC6CC4;
+        color: #EC96E0;
         font-size: 30px;
         position: relative;
         top: 2px;
@@ -118,6 +128,19 @@ body {
       }
       
       header button:active{
+        background: #2E2E2E;
+        
+        border: 1px solid rgba(0,0,0,0.1);
+        
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+
+        color: #444;
+        text-shadow: none;
+      }
+      
+      header button.disabled{
         background: rgba(0,0,0,0.1);
         
         -webkit-box-shadow: inset 0 0 2px rgba(0,0,0,0.2);
@@ -304,33 +327,58 @@ body {
     }
     
   #loader {
-    background-color: #343444;
-    color: #EEEEEE;
-    font-family: 'Damion', arial, serif;
+    background-color: #EEEEEE;
+    color: #444;
+    font-family: 'Helvetica', arial, sans-serif;
     font-weight: normal;
-    height: 100%;
+    height: 136px;
     position: absolute;
     text-align: center;
-    text-shadow: 0 1px rgba(0,0,0,0.6), 0 -1px rgba(0,0,0,0.6);
-    top: 0;
+    text-shadow: 0 1px white;
+    bottom: 0px;
     width: 100%;
     z-index: 10;
   }
     #loader #loader-spinner{
-      margin: 2em 0;
+      margin: 20px;
+      border: none;
     }
     #loader #loader-text {
-      font-size: 24px;
+      font-size: 14px;
       line-height: 24px;
-      margin: 2em 0;
+      margin: 10px;
     }
     #loader #loader-msg {
-      font-size: 16px;
+      font-size: 12px;
       line-height: 16px;
-      margin: 2em 0;
+      margin: 10px 0;
     }
     #loader .error {
-      color: #FFADAD;
+      color: #FF4E5D;
+    }
+    
+  .box{
+    position: absolute;
+    top: 0px;
+    
+    width: 100%;
+    height: 100%;
+    
+    z-index: 12;
+    
+    background: white;
+    
+    padding: 1px;
+    margin: -1px 0 0 -1px;
+    border: 1px solid #9F9F9F;
+  }
+  
+    .box h1{
+      margin-top: 10px;
+    }
+  
+    .box p, .box h1, .box h2, .box ul, .box li{
+      margin-left: 5px;
     }
 
 /*	

@@ -1,4 +1,3 @@
-
 var Loader = { 
   error: function(text) {
     var msg = document.getElementById('loader-text');
@@ -8,7 +7,9 @@ var Loader = {
     document.getElementById('loader-msg').innerHTML = '';
   },
   hide: function() {
-    document.getElementById('loader').style.display = 'none';
+    document.getElementById('loader').className += ' hidden';
+    document.getElementById('run').className = document.getElementById('run').className.replace(/\bdisabled\b/,'');
+    document.getElementById('run').disabled = false;
   },
   show: function() {
     document.getElementById('loader-spinner').style.display = 'block';
@@ -17,6 +18,8 @@ var Loader = {
     msg.innerText = 'Loading ...';
     document.getElementById('loader-msg').innerHTML = '';
     document.getElementById('loader').style.display = 'block';
+    document.getElementById('run').disabled = true;
+    
   },
   update: function(loaded, outOf) {
     var percent = (100.0 * loaded) / outOf;
@@ -101,13 +104,25 @@ var pageLoaded = function pageLoaded() {
     execute();
   }, false);
   
+  var aboutButton = document.getElementById("about");
+  var aboutBox = document.getElementById("about-box");
+  var open = false;
+  aboutButton.addEventListener("click", function(event){
+    open = !open;
+    if(open){
+      aboutBox.className = aboutBox.className.replace(/\bclosed\b/, '');
+    }
+    else{
+      aboutBox.className += "closed";
+    }
+  }, false);
+  
   // editor
   var editor = getEditor();
   var Mode = require("ace/mode/python").Mode;
   editor.setTheme("ace/theme/gumby");
   editor.setShowPrintMargin(false);
   editor.getSession().setMode(new Mode());
-  editor.getSession().setValue("import sys\n\nprint 'Hello world! This is Python {} on {}'.format(sys.version, sys.platform)\n\nprint 'Here are some numbers:', [2*x for x in range(5)][:4]");
 };
 window['pageLoaded'] = pageLoaded
 

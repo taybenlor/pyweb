@@ -80,6 +80,7 @@ STDIO.read = function(stream, ptr, size) {
       if (info.data.length === 0) {
         var items = print.items;
         var rawData = Module.stdin(items.length > 0 ? items[items.length - 1].value: '?');
+        if(rawData.charAt(rawData.length-1) != "\n"){rawData += "\n"}
         __print__(null); // flush
         print(rawData, 'input');
         __print__(null); // flush
