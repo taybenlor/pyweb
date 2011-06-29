@@ -5027,17 +5027,17 @@ else {
     };
 }
 
-if (window.getComputedStyle)
-    exports.computedStyle = function(element, style) {
-        if (style)
-            return (window.getComputedStyle(element, "") || {})[style] || "";
-        return window.getComputedStyle(element, "") || {}
-    };
-else
+if (Flow.Browser.IE)
     exports.computedStyle = function(element, style) {
         if (style)
             return element.currentStyle[style];
         return element.currentStyle
+    };
+else
+    exports.computedStyle = function(element, style) {
+        if (style)
+            return (window.getComputedStyle(element, "") || {})[style] || "";
+        return window.getComputedStyle(element, "") || {}
     };
 
 exports.scrollbarWidth = function() {
@@ -14017,7 +14017,8 @@ var Text = function(parentEl) {
         var style = this.$measureNode.style;
         var computedStyle = dom.computedStyle(this.element);
         for (var prop in this.$fontStyles)
-            style[prop] = computedStyle[prop];
+            if (prop in computedStyle)
+                style[prop] = computedStyle[prop];
 
         var size = {
             height: this.$measureNode.offsetHeight,
