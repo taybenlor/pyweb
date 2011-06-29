@@ -49,6 +49,7 @@ body {
   }
   
     header h1{
+      display: inline;
       font-family: 'Damion', arial, serif;
       font-size: 24px;
       line-height: 24px;
@@ -60,9 +61,21 @@ body {
       text-align: left;
     }
     
+      header h1 .heart{
+        color: #EC6CC4;
+        font-size: 30px;
+        position: relative;
+        top: 2px;
+      }
+    
     header h2{
-      text-align: center;
-      font-size: 10px;
+      font-family: 'Damion', serif;
+      color: #EEE;
+      text-shadow: 0 1px rgba(0,0,0,0.6), 0 -1px rgba(0,0,0,0.6);
+      font-size: 24px;
+      display: inline;
+      margin-left: 5px;
+      font-weight: normal;
     }
     
     header menu{
