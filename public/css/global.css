@@ -380,6 +380,10 @@ body {
     .box p, .box h1, .box h2, .box ul, .box li{
       margin-left: 5px;
     }
+    
+    .box li{
+      list-style: none;
+    }
 
 /*	
  *  Mobile/Tablet/Embedded layout
